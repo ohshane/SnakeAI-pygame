@@ -103,10 +103,11 @@ class Snake(Individual):
             self.encode_chromosome()
 
         # For creating the next apple
-        if apple_seed is None:
+        self.rand_apple = random.Random()
+        if apple_seed:
             apple_seed = np.random.randint(-1000000000, 1000000000)
-        self.apple_seed = apple_seed  # Only needed for saving/loading replay
-        self.rand_apple = random.Random(self.apple_seed)
+            self.apple_seed = apple_seed  # Only needed for saving/loading replay
+            self.rand_apple = random.Random(self.apple_seed)
 
         self.apple_location = None
         if starting_direction:

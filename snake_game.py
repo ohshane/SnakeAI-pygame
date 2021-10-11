@@ -5,7 +5,7 @@ from pathlib import Path
 import pygame
 
 
-SPEED = 10
+SPEED = 10000
 
 pygame.init()
 font = pygame.font.SysFont('arial', 20)
@@ -115,6 +115,6 @@ if __name__ == '__main__':
     game = SnakeGame()
     while True:
         is_game_over, score = game.play_scene()
-        print(is_game_over, score)
         if is_game_over:
+            print(is_game_over, score)
             break
