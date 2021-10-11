@@ -2,6 +2,7 @@ from snake import *
 from misc import *
 from settings import settings
 from pathlib import Path
+import os
 import pygame
 
 
@@ -10,8 +11,8 @@ SPEED = 10000
 pygame.init()
 font = pygame.font.SysFont('arial', 20)
 
-population_path = Path(__file__).parent / 'population'
-individual_path = population_path / 'gen_494'
+population_path = Path(os.path.abspath(__file__)).parent / 'population'
+individual_path = Path(population_path / 'gen_494')
 snake = load_snake(population_path, individual_path, settings)
 
 class Size:
@@ -54,10 +55,6 @@ class SnakeGame:
         self.speed = speed
         self.screen = pygame.display.set_mode(tuple(map(lambda x: x*Size.BLOCK_SIZE, self.snake.board_size)))
         self.clock = pygame.time.Clock()
-
-        print(f'{"board size":<15}: {self.snake.board_size}')
-        print(f'{"play speed":<15}: {self.speed}')
-        print(f'{"weight load":<15}: {bool(self.snake.chromosome)}')
     
     def play_scene(self):
         if self.snake.is_alive:
