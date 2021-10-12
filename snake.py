@@ -47,9 +47,11 @@ class Snake(Individual):
                  hidden_activation: Optional[ActivationFunction] = 'relu',
                  output_activation: Optional[ActivationFunction] = 'sigmoid',
                  lifespan: Optional[Union[int, float]] = np.inf,
-                 apple_and_self_vision: Optional[str] = 'binary'
+                 apple_and_self_vision: Optional[str] = 'binary',
+                 name: str = ''
                  ):
-
+        self.name = name
+        self.won = False
         self.lifespan = lifespan
         self.apple_and_self_vision = apple_and_self_vision.lower()
         self.score = 0  # Number of apples snake gets
@@ -260,8 +262,7 @@ class Snake(Individual):
             self.apple_location = Point(loc[0], loc[1])
         else:
             # I guess you win?
-            print('you won!')
-            pass
+            self.won = True
 
     def init_snake(self, starting_direction: str) -> None:
         """
@@ -426,6 +427,7 @@ def save_snake(population_folder: str, individual_name: str, snake: Snake, setti
     # @NOTE: No need to save board_size or hidden_layer_architecture
     #        since these are taken from settings
     constructor = {}
+    constructor['name'] = individual_name
     constructor['start_pos'] = snake.start_pos.to_dict()
     constructor['apple_seed'] = snake.apple_seed
     constructor['initial_velocity'] = snake.initial_velocity
@@ -488,6 +490,7 @@ def load_snake(population_folder: str, individual_name: str, settings: Optional[
                   hidden_activation=settings['hidden_layer_activation'],
                   output_activation=settings['output_layer_activation'],
                   lifespan=settings['lifespan'],
-                  apple_and_self_vision=settings['apple_and_self_vision']
+                  apple_and_self_vision=settings['apple_and_self_vision'],
+                  name=constructor_params['name']
                   )
     return snake

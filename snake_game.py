@@ -12,8 +12,8 @@ pygame.init()
 font = pygame.font.SysFont('arial', 20)
 
 population_path = Path(os.path.abspath(__file__)).parent / 'population'
-individual_path = Path(population_path / 'gen_540')
-snake = load_snake(population_path, individual_path, settings)
+individual_name = 'gen_660'
+snake = load_snake(population_path, individual_name, settings)
 
 class Size:
     BLOCK_SIZE = 20

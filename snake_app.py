@@ -19,12 +19,12 @@ import random
 import csv
 
 
-SQUARE_SIZE = (25, 35)
+SQUARE_SIZE = (35, 35)
 
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, settings, show=True, fps=200):
+    def __init__(self, settings, show=True, fps=200, snake=None):
         super().__init__()
         self.setAutoFillBackground(True)
         palette = self.palette()
@@ -66,13 +66,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.height = self._snake_widget_height + self.border[1] + self.border[3] + 200
         
         individuals: List[Individual] = []
+        
+        if snake is not None:
+            print(f'{"fine tuning":=^20}')
 
         for _ in range(self.settings['num_parents']):
-            individual = Snake(self.board_size, hidden_layer_architecture=self.settings['hidden_network_architecture'],
-                              hidden_activation=self.settings['hidden_layer_activation'],
-                              output_activation=self.settings['output_layer_activation'],
-                              lifespan=self.settings['lifespan'],
-                              apple_and_self_vision=self.settings['apple_and_self_vision'])
+            if snake is None:
+                individual = Snake(self.board_size, hidden_layer_architecture=self.settings['hidden_network_architecture'],
+                                hidden_activation=self.settings['hidden_layer_activation'],
+                                output_activation=self.settings['output_layer_activation'],
+                                lifespan=self.settings['lifespan'],
+                                apple_and_self_vision=self.settings['apple_and_self_vision'])
+            else:
+                individual = snake
             individuals.append(individual)
 
         self.best_fitness = 0
@@ -88,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update)
-        self.timer.start(1000./fps)
+        self.timer.start(1000/fps)
 
         if show:
             self.show()
@@ -156,7 +162,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ga_window.best_fitness_label.setText('{:.2E}'.format(Decimal(fitness)))
 
             self._current_individual += 1
-            print(f' 🐍 Gen.{self.current_generation} {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self._next_gen_size) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
+
+            generation_name = ''
+            if self.snake.name:
+                generation_name = f'{self.snake.name}_{self.current_generation}'
+            else:
+                generation_name = f'gen_{self.current_generation}'
+            
+            print(f' 🐍 {generation_name} {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self.population.num_individuals) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
 
             # Next generation
             if (self.current_generation > 0 and self._current_individual == self._next_gen_size) or\
@@ -164,14 +177,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 saved = False
                 if self.best_fitness == self.population.fittest_individual.fitness:
-                    save_snake(Path(__file__).parent / 'population', f'gen_{self.current_generation}', self.snake, self.settings)
+                    save_snake(Path(__file__).parent / 'population', generation_name, self.snake, self.settings)
                     saved = True
 
                 row = save_stats(self.population, Path(__file__).parent / 'population', 'log')
-                print(f'\n 🐍 Gen.{self.current_generation} {"is saved! 💾" if saved else ""}')
+                print(f'\n 🐍 {generation_name} {"is saved! 💾" if saved else ""}')
 
                 for i, key in enumerate(row):
-                    if i % 4 == 0:
+                    if i % 5 == 0:
                         print()
                     print(f' {key:<15} {row[key]:>30.3f}')
                 print()
@@ -221,7 +234,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 if lifespan > 0:
                     s = Snake(board_size, chromosome=params, hidden_layer_architecture=hidden_layer_architecture,
                             hidden_activation=hidden_activation, output_activation=output_activation,
-                            lifespan=lifespan, apple_and_self_vision=apple_and_self_vision)#,
+                            lifespan=lifespan, apple_and_self_vision=apple_and_self_vision, name=self.snake.name)
                     next_pop.append(s)
 
 
@@ -263,10 +276,10 @@ class MainWindow(QtWidgets.QMainWindow):
             # Create children from chromosomes generated above
             c1 = Snake(p1.board_size, chromosome=c1_params, hidden_layer_architecture=p1.hidden_layer_architecture,
                        hidden_activation=p1.hidden_activation, output_activation=p1.output_activation,
-                       lifespan=self.settings['lifespan'])
+                       lifespan=self.settings['lifespan'], name=self.snake.name)
             c2 = Snake(p2.board_size, chromosome=c2_params, hidden_layer_architecture=p2.hidden_layer_architecture,
                        hidden_activation=p2.hidden_activation, output_activation=p2.output_activation,
-                       lifespan=self.settings['lifespan'])
+                       lifespan=self.settings['lifespan'], name=self.snake.name)
 
             # Add children to the next generation
             next_pop.extend([c1, c2])
@@ -723,8 +736,15 @@ def load_stats(path_to_stats: str, normalize: Optional[bool] = True):
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import math
+
+    snake = None
+    if len(sys.argv) > 1:
+        population_path = Path(os.path.abspath(__file__)).parent / 'population'
+        individual_name = sys.argv[1]
+        snake = load_snake(population_path, individual_name, settings)
+
     app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow(settings, show=False, fps=math.inf)
+    window = MainWindow(settings, show=False, fps=math.inf, snake=snake)
     sys.exit(app.exec_())
