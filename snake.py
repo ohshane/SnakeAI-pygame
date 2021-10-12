@@ -105,6 +105,7 @@ class Snake(Individual):
 
         # For creating the next apple
         self.rand_apple = random.Random()
+        self.apple_seed = apple_seed
         if apple_seed:
             apple_seed = np.random.randint(-1000000000, 1000000000)
             self.apple_seed = apple_seed  # Only needed for saving/loading replay
@@ -359,7 +360,7 @@ class Snake(Individual):
 
             self._frames_since_last_apple += 1
             #@NOTE: If you have different sized grids you may want to change this
-            if self._frames_since_last_apple > 100:
+            if self._frames_since_last_apple > self.board_size[0]*self.board_size[1]:
                 self.is_alive = False
                 return False
 

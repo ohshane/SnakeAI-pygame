@@ -12,7 +12,7 @@ pygame.init()
 font = pygame.font.SysFont('arial', 20)
 
 population_path = Path(os.path.abspath(__file__)).parent / 'population'
-individual_path = Path(population_path / 'gen_494')
+individual_path = Path(population_path / 'gen_540')
 snake = load_snake(population_path, individual_path, settings)
 
 class Size:
@@ -53,20 +53,29 @@ class SnakeGame:
         self.snake = snake
         self.visible = visible
         self.speed = speed
+        self.game_over = False
         self.screen = pygame.display.set_mode(tuple(map(lambda x: x*Size.BLOCK_SIZE, self.snake.board_size)))
         self.clock = pygame.time.Clock()
     
     def play_scene(self):
-        if self.snake.is_alive:
+        if self.visible:
+            self.render()
+
+        self.snake.update()
+        self.snake.move()
+        
+        if self.game_over:
+            return self.game_over, self.snake.score
+        
+
+        if not self.game_over:
             self.snake.move()
             self.snake.update()
         else: # dead
-            pass
-        if self.visible:
-            self.render()
-            self.clock.tick(self.speed)
-        is_game_over = not self.snake.is_alive
-        return is_game_over, self.snake.score
+            self.game_over = True
+        
+        self.clock.tick(self.speed)
+        return self.game_over, self.snake.score
 
     def render(self):
         self.__render_background()
