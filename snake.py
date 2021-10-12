@@ -51,7 +51,7 @@ class Snake(Individual):
                  name: str = ''
                  ):
         self.name = name
-        self.won = False
+        self.win = False
         self.lifespan = lifespan
         self.apple_and_self_vision = apple_and_self_vision.lower()
         self.score = 0  # Number of apples snake gets
@@ -262,7 +262,7 @@ class Snake(Individual):
             self.apple_location = Point(loc[0], loc[1])
         else:
             # I guess you win?
-            self.won = True
+            self.win = True
 
     def init_snake(self, starting_direction: str) -> None:
         """

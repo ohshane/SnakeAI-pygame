@@ -6,15 +6,7 @@ import os
 import pygame
 
 
-SPEED = 10000
-
-pygame.init()
-font = pygame.font.SysFont('arial', 20)
-
-population_path = Path(os.path.abspath(__file__)).parent / 'population'
-individual_name = 'gen_660'
-snake = load_snake(population_path, individual_name, settings)
-
+SPEED = 100
 class Size:
     BLOCK_SIZE = 20
 
@@ -49,38 +41,37 @@ class DrawableVision(object):
         self.self_location = self_location
 
 class SnakeGame:
-    def __init__(self, snake=snake, visible=True, speed=SPEED):
-        self.snake = snake
+    def __init__(self, *, individual_name='gen_1040', visible=True, speed=SPEED):
+        population_path = Path(os.path.abspath(__file__)).parent / 'population'
+        self.snake = load_snake(population_path, individual_name, settings)
         self.visible = visible
         self.speed = speed
         self.game_over = False
-        self.screen = pygame.display.set_mode(tuple(map(lambda x: x*Size.BLOCK_SIZE, self.snake.board_size)))
+
+        if self.visible:
+            pygame.init()
+            self.screen = pygame.display.set_mode(tuple(map(lambda x: x*Size.BLOCK_SIZE, self.snake.board_size)))
         self.clock = pygame.time.Clock()
     
     def play_scene(self):
-        if self.visible:
-            self.render()
-
-        self.snake.update()
-        self.snake.move()
-        
         if self.game_over:
-            return self.game_over, self.snake.score
-        
+            pygame.quit()
+        else:
+            if self.visible:
+                self.render()
 
-        if not self.game_over:
-            self.snake.move()
             self.snake.update()
-        else: # dead
-            self.game_over = True
-        
-        self.clock.tick(self.speed)
+            self.game_over = not self.snake.move()
+            
+            self.clock.tick(self.speed)
         return self.game_over, self.snake.score
 
     def render(self):
         self.__render_background()
         self.__render_snake()
         self.__render_apple()
+
+        font = pygame.font.SysFont('arial', 20)
         self.screen.blit(
             font.render(f'Score: {self.snake.score}', True, (0,0,0)),
             (0,0)
@@ -118,9 +109,31 @@ class SnakeGame:
             ))
 
 if __name__ == '__main__':
-    game = SnakeGame()
-    while True:
-        is_game_over, score = game.play_scene()
-        if is_game_over:
-            print(is_game_over, score)
-            break
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    board_size = None
+    scores = []
+    for i in range(10):
+        temp_scores = []
+        for _ in range(10):
+            game = SnakeGame(individual_name='gen_1137', visible=False, speed=np.Inf)
+            if board_size is None:
+                board_size = game.snake.board_size
+            while True:
+                is_game_over, score = game.play_scene()
+                if is_game_over:
+                    temp_scores.append(score)
+                    break
+        print(f'mean {np.mean(temp_scores):>7.3f} (iter{i})')
+        scores.append(temp_scores)
+
+    scores = np.array(scores)
+    print(f'mean {np.mean(scores):>7.3f}')
+
+    plt.figure(figsize=(10,10))
+    ax = plt.subplot()
+    ax.set_title('Scores')
+    ax.boxplot(scores, showmeans=True)
+    plt.ylim((0, board_size[0]*board_size[1]-3))
+    plt.show()

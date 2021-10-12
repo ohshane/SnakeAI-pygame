@@ -45,3 +45,10 @@ class Population(object):
 
     def get_fitness_std(self) -> float:
         return np.std(np.array([individual.fitness for individual in self.individuals]))
+
+    @property
+    def num_wins(self) -> int:
+        count = 0
+        for individual in self.individuals:
+            count += int(individual.win)
+        return count

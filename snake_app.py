@@ -169,7 +169,8 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 generation_name = f'gen_{self.current_generation}'
             
-            print(f' 🐍 {generation_name} {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self.population.num_individuals) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
+            print(f' 🐍 {generation_name}')
+            print(f' {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self.population.num_individuals) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
 
             # Next generation
             if (self.current_generation > 0 and self._current_individual == self._next_gen_size) or\
@@ -181,7 +182,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     saved = True
 
                 row = save_stats(self.population, Path(__file__).parent / 'population', 'log')
-                print(f'\n 🐍 {generation_name} {"is saved! 💾" if saved else ""}')
+                print(f'\n  {self.population.get_wins}/{self.population.num_individuals} {"💾" if saved else ""}')
 
                 for i, key in enumerate(row):
                     if i % 5 == 0:
