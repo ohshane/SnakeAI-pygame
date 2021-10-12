@@ -19,7 +19,7 @@ import random
 import csv
 
 
-SQUARE_SIZE = (35, 35)
+SQUARE_SIZE = (25, 35)
 
 
 
@@ -156,28 +156,26 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ga_window.best_fitness_label.setText('{:.2E}'.format(Decimal(fitness)))
 
             self._current_individual += 1
+            print(f' 🐍 Gen.{self.current_generation} {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self._next_gen_size) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
 
             # Next generation
             if (self.current_generation > 0 and self._current_individual == self._next_gen_size) or\
                 (self.current_generation == 0 and self._current_individual == settings['num_parents']):
-                # print(self.settings)
-                # print('======================= Gneration {} ======================='.format(self.current_generation))
-                # print('----Max fitness:', self.population.fittest_individual.fitness)
-                # print('----Best Score:', self.population.fittest_individual.score)
-                # print('----Average fitness:', self.population.average_fitness)
 
                 saved = False
                 if self.best_fitness == self.population.fittest_individual.fitness:
                     save_snake(Path(__file__).parent / 'population', f'gen_{self.current_generation}', self.snake, self.settings)
                     saved = True
 
-                save_stats(self.population, Path(__file__).parent / 'population', 'log')
+                row = save_stats(self.population, Path(__file__).parent / 'population', 'log')
+                print(f'\n 🐍 Gen.{self.current_generation} {"is saved! 💾" if saved else ""}')
 
-                print(f'Gen {self.current_generation} {"***" if saved else ""}')
-                print(f'{"max fit":<12}: {self.population.fittest_individual.fitness:>15.3f}')
-                print(f'{"average fit":<12}: {self.population.average_fitness:>15.3f}')
-                print(f'{"max score":<12}: {self.population.fittest_individual.score:>15.3f}')
+                for i, key in enumerate(row):
+                    if i % 4 == 0:
+                        print()
+                    print(f' {key:<15} {row[key]:>30.3f}')
                 print()
+
                 self.next_generation()
             else:
                 current_pop = self.settings['num_parents'] if self.current_generation == 0 else self._next_gen_size
@@ -624,8 +622,6 @@ class SnakeWidget(QtWidgets.QWidget):
         dist = ((diff_x * diff_x) + (diff_y * diff_y)) ** 0.5
         return dist
 
-        
-
 def _calc_stats(data: List[Union[int, float]]) -> Tuple[float, float, float, float, float]:
     mean = np.mean(data)
     median = np.median(data)
@@ -672,6 +668,7 @@ def save_stats(population: Population, path_to_dir: str, fname: str):
 
         # Write row
         writer.writerow(row)
+    return row
 
 def load_stats(path_to_stats: str, normalize: Optional[bool] = True):
     data = {}
