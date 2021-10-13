@@ -51,7 +51,6 @@ class Snake(Individual):
                  name: str = ''
                  ):
         self.name = name
-        self.win = False
         self.cod = None
         self.lifespan = lifespan
         self.apple_and_self_vision = apple_and_self_vision.lower()
@@ -127,6 +126,15 @@ class Snake(Individual):
         self.initial_velocity = initial_velocity
         self.init_velocity(self.starting_direction, self.initial_velocity)
         self.generate_apple()
+
+    @property
+    def win(self):
+        if not self.is_alive:
+            if self.score == self.board_size[0]*self.board_size[1]-3:
+                return True
+            else:
+                return False
+        return False
 
     @property
     def fitness(self):
@@ -265,7 +273,7 @@ class Snake(Individual):
             self.apple_location = Point(loc[0], loc[1])
         else:
             # I guess you win?
-            self.win = True
+            pass
 
     def init_snake(self, starting_direction: str) -> None:
         """
