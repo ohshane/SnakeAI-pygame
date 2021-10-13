@@ -114,10 +114,10 @@ if __name__ == '__main__':
 
     board_size = None
     scores = []
-    for i in range(10):
+    for i in range(1):
         temp_scores = []
         for _ in range(10):
-            game = SnakeGame(individual_name='gen_1137', visible=False, speed=np.Inf)
+            game = SnakeGame(individual_name='gen_1452', visible=True, speed=500)
             if board_size is None:
                 board_size = game.snake.board_size
             while True:
