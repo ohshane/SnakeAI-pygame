@@ -52,6 +52,7 @@ class Snake(Individual):
                  ):
         self.name = name
         self.win = False
+        self.cod = None
         self.lifespan = lifespan
         self.apple_and_self_vision = apple_and_self_vision.lower()
         self.score = 0  # Number of apples snake gets
@@ -385,8 +386,10 @@ class Snake(Individual):
         Return False otherwise
         """
         if (position.x < 0) or (position.x > self.board_size[0] - 1):
+            self.cod = 'wall'
             return False
         if (position.y < 0) or (position.y > self.board_size[1] - 1):
+            self.cod = 'wall'
             return False
 
         if position == self.snake_array[-1]:
@@ -394,6 +397,7 @@ class Snake(Individual):
         # If the position is a body location, not valid.
         # @NOTE: _body_locations will contain tail, so need to check tail first
         elif position in self._body_locations:
+            self.cod = 'body'
             return False
         # Otherwise you good
         else:

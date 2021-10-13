@@ -121,7 +121,7 @@ if __name__ == '__main__':
     for i in range(test_size[0]):
         temp_scores = []
         for j in range(test_size[1]):
-            game = SnakeGame(individual_name='gen_1493', visible=False, speed=np.inf)
+            game = SnakeGame(individual_name='gen_1493_153', visible=False, speed=np.inf)
             perfect = game.snake.board_size[0]*game.snake.board_size[1] - 3
             if board_size is None:
                 board_size = game.snake.board_size

@@ -179,13 +179,32 @@ class MainWindow(QtWidgets.QMainWindow):
                 (self.current_generation == 0 and self._current_individual == settings['num_parents']):
 
                 saved = False
-                if self.population.average_fitness >= self.best_average_fitness:
+                if self.current_generation != 0 and self.population.average_fitness >= self.best_average_fitness:
                     save_snake(Path(__file__).parent / 'population', generation_name, self.snake, self.settings)
                     self.best_average_fitness = self.population.average_fitness
                     saved = True
+                
+                print()
+
+                cods = {
+                    'wall': 0,
+                    'body': 0,
+                }
+
+                population_count = self.population.num_individuals
+                num_wins = self.population.num_wins
+                for individual in self.population.individuals:
+                    if not individual.win:
+                        for k in cods.keys():
+                            if k == individual.cod:
+                                cods[k] += 1
+                            break
 
                 row = save_stats(self.population, Path(__file__).parent / 'population', 'log', gen_name=generation_name)
-                print(f'\n{" 💾 saved" if saved else ""}\n')
+                if saved:
+                    print(' 💾 saved')
+                print(f' 💀 COD {cods}')
+                print()
 
                 self.next_generation()
             else:
