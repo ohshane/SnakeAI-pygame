@@ -111,17 +111,22 @@ class SnakeGame:
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import numpy as np
+    import sys
+
+    individual_name = sys.argv[1]
 
     test_size = (10,10)
 
-    print(f'{f" test {test_size} ":=^30}')
+    print(f'{"test":=^30}')
+    print(f'{individual_name:=^30}')
+    print(f'{str(test_size):=^30}')
 
     board_size = None
     scores = []
     for i in range(test_size[0]):
         temp_scores = []
         for j in range(test_size[1]):
-            game = SnakeGame(individual_name='gen_1493_153_460', visible=False, speed=np.Inf)
+            game = SnakeGame(individual_name=individual_name, visible=False, speed=np.Inf)
             perfect = game.snake.board_size[0]*game.snake.board_size[1] - 3
             if board_size is None:
                 board_size = game.snake.board_size

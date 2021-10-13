@@ -1,4 +1,36 @@
-  gen_1493
-  gen_1493_153
-  gen_1493_153_460
-* gen_1493_153_540
+gen_1493
+    board_size          10x10
+    mutation            0.05
+    mutation_rate_type  static
+    num_parents         500
+    num_offspring       1000
+    SPBX_type           r
+
+    gen_1493_153
+        board_size          10x10
+        mutation            0.05
+        mutation_rate_type  static
+        num_parents         500
+        num_offspring       1000
+        SPBX_type           r
+
+        gen_1493_153_460 <- transferable
+            board_size          10x10
+            mutation            0.05
+            mutation_rate_type  decaying
+            num_parents         50
+            num_offspring       100
+            SPBX_type           c
+
+            transfer 10x10 -> 32x24
+            gen_1493_153_460_
+
+        gen_1493_153_MAX
+            board_size          10x10
+            mutation            0.05
+            mutation_rate_type  decaying
+            num_parents         50
+            num_offspring       100
+            SPBX_type           c
+
+            transfer 10x10 -> 32x24
