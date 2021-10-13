@@ -84,6 +84,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.best_fitness = 0
         self.best_score = 0
 
+        self.best_average_fitness = 0
+
         self._current_individual = 0
         self.population = Population(individuals)
 
@@ -169,7 +171,7 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 generation_name = f'gen_{self.current_generation}'
             
-            print(f' 🐍 {generation_name}')
+            print(f' 🐍 {generation_name}', end='')
             print(f' {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self.population.num_individuals) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
 
             # Next generation
@@ -177,18 +179,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 (self.current_generation == 0 and self._current_individual == settings['num_parents']):
 
                 saved = False
-                if self.best_fitness == self.population.fittest_individual.fitness:
+                if self.population.average_fitness >= self.best_average_fitness:
                     save_snake(Path(__file__).parent / 'population', generation_name, self.snake, self.settings)
+                    self.best_average_fitness = self.population.average_fitness
                     saved = True
 
-                row = save_stats(self.population, Path(__file__).parent / 'population', 'log')
-                print(f'\n  {self.population.get_wins}/{self.population.num_individuals} {"💾" if saved else ""}')
-
-                for i, key in enumerate(row):
-                    if i % 5 == 0:
-                        print()
-                    print(f' {key:<15} {row[key]:>30.3f}')
-                print()
+                row = save_stats(self.population, Path(__file__).parent / 'population', 'log', gen_name=generation_name)
+                print(f'\n{" 💾 saved" if saved else ""}\n')
 
                 self.next_generation()
             else:
@@ -645,12 +642,13 @@ def _calc_stats(data: List[Union[int, float]]) -> Tuple[float, float, float, flo
 
     return (mean, median, std, _min, _max)
 
-def save_stats(population: Population, path_to_dir: str, fname: str):
+def save_stats(population: Population, path_to_dir: str, fname: str, gen_name: str):
     if not os.path.exists(path_to_dir):
         os.makedirs(path_to_dir)
 
     f = os.path.join(path_to_dir, fname + '.csv')
     
+    gen_name = gen_name
     frames = [individual._frames for individual in population.individuals]
     apples = [individual.score for individual in population.individuals]
     fitness = [individual.fitness for individual in population.individuals]
@@ -665,7 +663,8 @@ def save_stats(population: Population, path_to_dir: str, fname: str):
                 ]
     stats = ['mean', 'median', 'std', 'min', 'max']
 
-    header = [t[0] + '_' + s for t in trackers for s in stats]
+    header = ['gen_name']
+    header += [t[0] + '_' + s for t in trackers for s in stats]
 
     with open(f, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=header, delimiter=',')
@@ -673,6 +672,7 @@ def save_stats(population: Population, path_to_dir: str, fname: str):
             writer.writeheader()
 
         row = {}
+        row['gen_name'] = gen_name
         # Create a row to insert into csv
         for tracker_name, tracker_object in trackers:
             curr_stats = _calc_stats(tracker_object)

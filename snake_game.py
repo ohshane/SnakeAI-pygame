@@ -112,24 +112,34 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import numpy as np
 
+    test_size = (10,10)
+
+    print(f'{f" test {test_size} ":=^30}')
+
     board_size = None
     scores = []
-    for i in range(1):
+    for i in range(test_size[0]):
         temp_scores = []
-        for _ in range(10):
-            game = SnakeGame(individual_name='gen_1452', visible=True, speed=500)
+        for j in range(test_size[1]):
+            game = SnakeGame(individual_name='gen_1493', visible=False, speed=np.inf)
+            perfect = game.snake.board_size[0]*game.snake.board_size[1] - 3
             if board_size is None:
                 board_size = game.snake.board_size
             while True:
                 is_game_over, score = game.play_scene()
+                print(f'{f"iter_{i+1}_{j+1}":<15} {f"{score:>6.1f}/{perfect}":>10} {score*100/perfect:>6.2f}%', end='\r')
                 if is_game_over:
                     temp_scores.append(score)
                     break
-        print(f'mean {np.mean(temp_scores):>7.3f} (iter{i})')
+        print(f'{f"iter_{i+1}":<15} {f"{np.mean(temp_scores):>6.1f}/{perfect}":>10} {np.mean(temp_scores)*100/perfect:>6.2f}%')
         scores.append(temp_scores)
 
-    scores = np.array(scores)
-    print(f'mean {np.mean(scores):>7.3f}')
+    print('='*30)
+    scores = np.transpose(np.array(scores))
+    print(f'max    {np.max(scores):>7.3f}')
+    print(f'mean   {np.mean(scores):>7.3f}')
+    print(f'median {np.median(scores):>7.3f}')
+    print(f'min    {np.min(scores):>7.3f}')
 
     plt.figure(figsize=(10,10))
     ax = plt.subplot()

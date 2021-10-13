@@ -21,10 +21,10 @@ settings = {
     ## Mutation ##
 
     # Mutation rate is the probability that a given gene in a chromosome will randomly mutate
-    'mutation_rate':               0.05,       # Value must be between [0.00, 1.00)
+    'mutation_rate':               0.1,       # Value must be between [0.00, 1.00)
     # If the mutation rate type is static, then the mutation rate will always be `mutation_rate`,
     # otherwise if it is decaying it will decrease as the number of generations increase
-    'mutation_rate_type':          'static',   # Options are [static, decaying]
+    'mutation_rate_type':          'decaying',   # Options are [static, decaying]
     # The probability that if a mutation occurs, it is gaussian
     'probability_gaussian':        1.0,        # Values must be between [0.00, 1.00]
     # The probability that if a mutation occurs, it is random uniform
@@ -48,9 +48,9 @@ settings = {
     ## Selection ##
 
     # Number of parents that will be used for reproducing
-    'num_parents':                 500,
+    'num_parents':                 50,
     # Number of offspring that will be created. Keep num_offspring >= num_parents
-    'num_offspring':               1000,
+    'num_offspring':               100,
     # The selection type to use for the next generation.
     # If selection_type == 'plus':
     #     Then the top num_parents will be chosen from (num_offspring + num_parents)

@@ -76,6 +76,8 @@ class Snake(Individual):
 
             start_pos = Point(x, y)
         self.start_pos = start_pos
+        #
+        self.start_pos = Point(self.board_size[0]//2, self.board_size[1]//2)
 
         self._vision_type = VISION_8
         self._vision: List[Vision] = [None] * len(self._vision_type)
