@@ -24,7 +24,7 @@ settings = {
     ## Mutation ##
 
     # Mutation rate is the probability that a given gene in a chromosome will randomly mutate
-    'mutation_rate':               0.05,       # Value must be between [0.00, 1.00)
+    'mutation_rate':               0.001,       # Value must be between [0.00, 1.00)
     # If the mutation rate type is static, then the mutation rate will always be `mutation_rate`,
     # otherwise if it is decaying it will decrease as the number of generations increase
     'mutation_rate_type':          'decaying',   # Options are [static, decaying]
@@ -42,7 +42,7 @@ settings = {
     'probability_SBX':             0.5,
     # The type of SPBX to consider. If it is 'r' then it flattens a 2D array in row major ordering.
     # If SPBX_type is 'c' then it flattens a 2D array in column major ordering.
-    'SPBX_type':                   'c',        # Options are 'r' for row or 'c' for column
+    'SPBX_type':                   'r',        # Options are 'r' for row or 'c' for column
     # Probability that when crossover occurs, it is single point binary crossover
     'probability_SPBX':            0.5,
     # Crossover selection type determines the way in which we select individuals for crossover
@@ -53,7 +53,7 @@ settings = {
     # Number of parents that will be used for reproducing
     'num_parents':                 50,
     # Number of offspring that will be created. Keep num_offspring >= num_parents
-    'num_offspring':               100,
+    'num_offspring':               50,
     # The selection type to use for the next generation.
     # If selection_type == 'plus':
     #     Then the top num_parents will be chosen from (num_offspring + num_parents)

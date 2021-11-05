@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
     individual_name = sys.argv[1]
 
-    test_size = (10,10)
+    test_size = (100,10)
 
     print(f'{"test":=^30}')
     print(f'{individual_name:=^30}')

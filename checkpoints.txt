@@ -1,4 +1,12 @@
 gen_1493
+board_size          10x10
+mutation            0.05
+mutation_rate_type  static
+num_parents         500
+num_offspring       1000
+SPBX_type           r
+
+    gen_1493_153
     board_size          10x10
     mutation            0.05
     mutation_rate_type  static
@@ -6,31 +14,46 @@ gen_1493
     num_offspring       1000
     SPBX_type           r
 
-    gen_1493_153
+        gen_1493_153_460 <- transferable (88.8%)
         board_size          10x10
         mutation            0.05
-        mutation_rate_type  static
-        num_parents         500
-        num_offspring       1000
-        SPBX_type           r
-
-        gen_1493_153_460 <- transferable
-            board_size          10x10
-            mutation            0.05
-            mutation_rate_type  decaying
-            num_parents         50
-            num_offspring       100
-            SPBX_type           c
+        mutation_rate_type  decaying
+        num_parents         50
+        num_offspring       100
+        SPBX_type           c
 
             transfer 10x10 -> 32x24
-            gen_1493_153_460_
+
+            gen_1493_153_460_3 (95.5%)
+            board_size          32x24
+            mutation            0.001
+            mutation_rate_type  decaying
+            num_parents         50
+            num_offspring       50
+            SPBX_type           c
+
+            gen_1493_153_460_129 (99.8%)
+            board_size          32x24
+            mutation            0.001
+            mutation_rate_type  decaying
+            num_parents         50
+            num_offspring       50
+            SPBX_type           c
+
+            gen_1493_153_460_130 (99.8%)
+            board_size          32x24
+            mutation            0.001
+            mutation_rate_type  decaying
+            num_parents         50
+            num_offspring       50
+            SPBX_type           c
 
         gen_1493_153_MAX
-            board_size          10x10
-            mutation            0.05
-            mutation_rate_type  decaying
-            num_parents         50
-            num_offspring       100
-            SPBX_type           c
+        board_size          10x10
+        mutation            0.05
+        mutation_rate_type  decaying
+        num_parents         50
+        num_offspring       100
+        SPBX_type           c
 
-            transfer 10x10 -> 32x24
+        transfer 10x10 -> 32x24

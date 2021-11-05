@@ -3,8 +3,8 @@
     "SPBX_type": "r",
     "apple_and_self_vision": "binary",
     "board_size": [
-        10,
-        10
+        32,
+        24
     ],
     "crossover_selection_type": "roulette_wheel",
     "hidden_layer_activation": "relu",
@@ -13,9 +13,9 @@
         12
     ],
     "lifespan": Infinity,
-    "mutation_rate": 0.03,
-    "mutation_rate_type": "static",
-    "num_offspring": 100,
+    "mutation_rate": 0.001,
+    "mutation_rate_type": "decaying",
+    "num_offspring": 50,
     "num_parents": 50,
     "output_layer_activation": "sigmoid",
     "probability_SBX": 0.5,

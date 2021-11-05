@@ -142,8 +142,11 @@ class Snake(Individual):
     
     def calculate_fitness(self):
         # Give positive minimum fitness for roulette wheel selection
-        self._fitness = (self._frames) + ((2**self.score) + (self.score**2.1)*500) - (((.25 * self._frames)**1.3) * (self.score**1.2))
+        # self._fitness = (self._frames) + ((2**self.score) + (self.score**2.1)*500) - (((.25 * self._frames)**1.3) * (self.score**1.2))
         # self._fitness = (self._frames) + ((2**self.score) + (self.score**2.1)*500) - (((.25 * self._frames)) * (self.score))
+
+        b = self.board_size[0]*self.board_size[1]
+        self._fitness = self.score**2 * self._frames**(self.score/(2*b) - 1)
         self._fitness = max(self._fitness, .1)
 
     @property
@@ -374,6 +377,7 @@ class Snake(Individual):
             #@NOTE: If you have different sized grids you may want to change this
             if self._frames_since_last_apple > self.board_size[0]*self.board_size[1]:
                 self.is_alive = False
+                self.cod = 'loop'
                 return False
 
             return True

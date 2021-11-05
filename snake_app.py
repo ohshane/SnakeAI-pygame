@@ -172,15 +172,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 generation_name = f'gen_{self.current_generation}'
             
             print(f' 🐍 {generation_name}', end='')
-            print(f' {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self.population.num_individuals) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
+            print(f' {self.snake.score:>4}/{self.board_size[0]*self.board_size[1]-3} {self._current_individual:>4} {"█" * (int((self._current_individual*100) / self.population.num_individuals) // 5):░<20} {(self._current_individual*100)/self._next_gen_size:>5.1f}%', end='\r')
 
             # Next generation
             if (self.current_generation > 0 and self._current_individual == self._next_gen_size) or\
                 (self.current_generation == 0 and self._current_individual == settings['num_parents']):
 
                 saved = False
-                if self.current_generation != 0 and (self.population.average_fitness >= self.best_average_fitness):
-                    save_snake(Path(__file__).parent / 'population', generation_name, self.snake, self.settings)
+                if self.current_generation != 0:
+                    save_snake(Path(__file__).parent / 'population', generation_name, self.population.fittest_individual, self.settings)
                     self.best_average_fitness = self.population.average_fitness
                     saved = True
                 
@@ -189,6 +189,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 cods = {
                     'wall': 0,
                     'body': 0,
+                    'loop': 0,
                     'None': 0,
                 }
 
@@ -201,11 +202,11 @@ class MainWindow(QtWidgets.QMainWindow):
                                 cods[k] += 1
                                 break
 
-                row = save_stats(self.population, Path(__file__).parent / 'population', 'log', gen_name=generation_name)
+                log_name = f'log_{self.snake.name}' if self.snake.name else 'log'
+                save_stats(self.population, Path(__file__).parent / 'population', log_name, gen_name=generation_name)
                 if saved:
                     print(' 💾 saved')
                 print(f' 💀 COD {cods}')
-                print(population_count, num_wins)
                 print()
 
                 self.next_generation()
